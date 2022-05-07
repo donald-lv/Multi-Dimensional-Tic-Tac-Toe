@@ -1,2 +1,2 @@
-# multidimTTT
+# Multi-Dimensional-Tic-Tac-Toe
 Rewrite of ND-Tic-Tac-Toe in C for fun and becuase the old code was bad...

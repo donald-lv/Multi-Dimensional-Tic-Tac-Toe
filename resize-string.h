@@ -38,4 +38,9 @@ void string_append_string(struct string *str, const struct string *tail);
 //   and ending index of end - includes the element at start and discludes the element at end
 // requires: 0 <= start < string length
 //           0 <= end <= string length
+// effects: allocates memory for the slice
 struct string *string_slice(const struct string *str, int start, int end);
+
+// string_print(str) prints the string.
+// effects: produces output
+void string_print(struct string *str);

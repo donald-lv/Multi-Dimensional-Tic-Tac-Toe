@@ -9,10 +9,16 @@ struct vector;
 // time: O(1)
 int vector_dimension(const struct vector *v);
 
-// vector_component(v, i) returns 
-// requires: 0 <= i < dimension of v
+// vector_component(v, comp) returns the comp component of v
+// requires: 0 <= comp < dimension of v
 // time: O(1)
-int vector_component(const struct vector *v, int i);
+int vector_component(const struct vector *v, int comp);
+
+// vector_change_component(v, comp, value) adds value to the (comp)th component of v
+// requires: 0 <= comp < dimension of v
+// effects: modifies v
+// time: O(1)
+void vector_component(const struct vector *v, int comp, int comp);
 
 // vector_dot(v, u) produces the real inner product (dot product) of v and u
 // requires: v and u have the same dimensions

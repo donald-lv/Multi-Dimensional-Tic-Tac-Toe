@@ -5,6 +5,7 @@
 // All non-const pointer arguments must be pointers to heap
 
 #include <assert.h>
+#include <stdio.h>
 
 struct string {
   char *data;
@@ -36,6 +37,7 @@ int string_length(const struct string *str) {
 void string_append_char(struct string *str, char c) {
   assert(str);
 
+  // guarantee space for a terminator
   if (str->len == str->maxlen) {
     str->maxlen *= 2;
   }
@@ -72,4 +74,12 @@ struct string *string_slice(const struct string *str, int start, int end) {
   string_append_char_arr(ret, str -> data + start, end - start);
 
   return ret;
+}
+
+void string_print(const struct string *str) {
+  assert(str);
+  assert(str->data);
+
+  str->data[str->len] = '\0';
+  printf("%s", str->data);
 }

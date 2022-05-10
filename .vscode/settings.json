@@ -1,6 +1,9 @@
 {
   "files.associations": {
-    "assert.h": "c"
+    "assert.h": "c",
+    "iterator": "c",
+    "memory": "c",
+    "xutility": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled"
 }

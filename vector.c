@@ -17,12 +17,21 @@ int vector_dimension(const struct vector *v) {
 }
 
 // see interface for documentation
-int vector_component(const struct vector *v, int i) {
+int vector_component(const struct vector *v, int comp) {
   assert(v);
-  assert(0 <= i);
-  assert(i <= vector_dimension(v));
+  assert(0 <= comp);
+  assert(comp <= vector_dimension(v));
 
-  return (v->data)[i];
+  return (v->data)[comp];
+}
+
+// see interface for documentation
+void vector_add_component(struct vector *v, int comp, int value) {
+  assert(v);
+  assert(0 <= comp);
+  assert(comp <= vector_dimension(v));
+
+  v->data[comp] = value;
 }
 
 // see interface for documentation

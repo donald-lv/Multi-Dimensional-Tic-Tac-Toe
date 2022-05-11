@@ -5,6 +5,7 @@
 // All non-const pointer arguments must be pointers to heap
 
 #include <assert.h>
+#include <stdlib.h>
 
 struct string;
 

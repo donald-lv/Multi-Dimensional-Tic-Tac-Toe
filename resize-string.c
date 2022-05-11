@@ -6,6 +6,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct string {
   char *data;
@@ -51,7 +52,7 @@ void string_append_char_arr(struct string *str, const char *arr, int arr_len) {
   assert(arr);
 
   for (const char *c = arr; c < arr + arr_len; ++c) {
-    string_apprend_char_arr(str, c);
+    string_append_char(str, *c);
   }
 }
 

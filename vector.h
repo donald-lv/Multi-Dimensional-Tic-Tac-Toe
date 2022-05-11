@@ -1,6 +1,8 @@
 // Interface for the vector module
 //   A module containing the vector ADT and some functions for vectors
 
+#include <stdbool.h>
+
 // a vector with a given dimension and coordinates
 struct vector;
 
@@ -14,17 +16,26 @@ int vector_dimension(const struct vector *v);
 // time: O(1)
 int vector_component(const struct vector *v, int comp);
 
-// vector_change_component(v, comp, value) adds value to the (comp)th component of v
+// vector_add_component(v, comp, value) adds value to the (comp)th component of v
 // requires: 0 <= comp < dimension of v
 // effects: modifies v
 // time: O(1)
-void vector_component(const struct vector *v, int comp, int comp);
+void vector_add_component(struct vector *v, int comp, int value);
 
-// vector_dot(v, u) produces the real inner product (dot product) of v and u
-// requires: v and u have the same dimensions
-// effects: allocates space for a vector of same dimension of v and u
-// time: O(n)
-struct vector *vector_dot(const struct vector *v, const struct vector *u);
+// vector_set_component(v, comp, value) sets the (comp)th component of v to value
+// requires: 0 <= comp < dimension of v
+// effects: modifies v
+// time: O(1)
+void vector_set_component(struct vector *v, int comp, int value);
+
+// vector_zero(v) zeroes v
+// effects: zeroes v
+// time: O(n) where n is the dimension of v
+void vector_zero(struct vector *v);
+
+// vector_is_zero(v) determines if v is a zero vector
+// time: O(n) where n is dimension of v
+bool vector_is_zero(const struct vector *v);
 
 // vector_create(n) creates a vector with n components and returns its address
 // requires: n > 0

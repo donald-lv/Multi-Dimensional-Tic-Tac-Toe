@@ -1,22 +1,23 @@
 // implementation of the vector module
+//   see interface for documentation
+
+// All pointer arguments must be valid pointers
 
 #include "vector.h"
 #include <stdlib.h>
 #include <assert.h>
-
+#include <stdbool.h>
 
 struct vector {
   int *data;
   int dimension;
 };
 
-// see interface for documentation
 int vector_dimension(const struct vector *v) {
   assert(v);
   return v->dimension;
 }
 
-// see interface for documentation
 int vector_component(const struct vector *v, int comp) {
   assert(v);
   assert(0 <= comp);
@@ -25,8 +26,15 @@ int vector_component(const struct vector *v, int comp) {
   return (v->data)[comp];
 }
 
-// see interface for documentation
 void vector_add_component(struct vector *v, int comp, int value) {
+  assert(v);
+  assert(0 <= comp);
+  assert(comp <= vector_dimension(v));
+
+  v->data[comp] += value;
+}
+
+void vector_set_component(struct vector *v, int comp, int value) {
   assert(v);
   assert(0 <= comp);
   assert(comp <= vector_dimension(v));
@@ -34,7 +42,25 @@ void vector_add_component(struct vector *v, int comp, int value) {
   v->data[comp] = value;
 }
 
-// see interface for documentation
+void vector_zero(struct vector *v) {
+  assert(v);
+  for (int *i = v->data; i < v->data + v->dimension; ++i) {
+    i = 0;
+  }
+}
+
+bool vector_is_zero(const struct vector *v) {
+  assert(v);
+
+  for (const int *i = v->data; i < v->data + v->dimension; ++i) {
+    if (i != 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 struct vector *vector_create(int n) {
   assert(n > 0);
 
@@ -45,7 +71,6 @@ struct vector *vector_create(int n) {
 
 }
 
-// see interface for documentation
 void vector_destroy(struct vector* v) {
   assert(v);
   assert(v->data);

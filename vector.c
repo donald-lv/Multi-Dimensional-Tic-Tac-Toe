@@ -4,9 +4,11 @@
 // All pointer arguments must be valid pointers
 
 #include "vector.h"
-#include <stdlib.h>
+
 #include <assert.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 struct vector {
   int *data;
@@ -62,7 +64,7 @@ bool vector_is_zero(const struct vector *v) {
 }
 
 struct vector *vector_create(int n) {
-  assert(n > 0);
+  assert(n >= 0);
 
   struct vector *vect = malloc(sizeof(struct vector));
   
@@ -71,10 +73,23 @@ struct vector *vector_create(int n) {
 
 }
 
-void vector_destroy(struct vector* v) {
+void vector_destroy(struct vector *v) {
   assert(v);
   assert(v->data);
 
   free(v->data);
   free(v);
+}
+
+void vector_print(const struct vector *v) {
+  printf("(");
+
+  if (v->dimension > 0) {
+    printf("%d", v->data[0]);
+    for (int i = 1; i < v->dimension; ++i) {
+      printf(", %d", v->data[i]);
+    }
+  }
+
+  printf(")");
 }

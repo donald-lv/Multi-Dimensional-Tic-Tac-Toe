@@ -38,13 +38,14 @@ int string_length(const struct string *str) {
 void string_append_char(struct string *str, char c) {
   assert(str);
 
+  str->data[str->len] = c;
+  ++(str->len);
+
   // guarantee space for a terminator
   if (str->len == str->maxlen) {
     str->maxlen *= 2;
+    str->data = realloc(str->data, str->maxlen);
   }
-
-  *(str->data + str->len) = c;
-  ++(str->len);
 }
 
 void string_append_char_arr(struct string *str, const char *arr, int arr_len) {

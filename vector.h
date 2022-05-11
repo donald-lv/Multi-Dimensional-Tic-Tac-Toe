@@ -37,8 +37,13 @@ void vector_zero(struct vector *v);
 // time: O(n) where n is dimension of v
 bool vector_is_zero(const struct vector *v);
 
+// vector_print(v) prints a vector. no newline at end
+// effects: produces output
+// time: O(1)
+void vector_print(const struct vector *v);
+
 // vector_create(n) creates a vector with n components and returns its address
-// requires: n > 0
+// requires: n >= 0
 // effects: allocates memory for a vector with n components
 // time: O(1)
 struct vector *vector_create(int n);

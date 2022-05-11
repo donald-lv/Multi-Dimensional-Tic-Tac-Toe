@@ -39,28 +39,6 @@ static int int_pow(int base, int exp) {
   return prod;
 }
 
-struct board *board_create(int width, int dimension) {
-  assert(width >= 0);
-  assert(dimension >= 0);
-
-  struct board *b = malloc(sizeof(struct board));
-  
-  b->len = int_pow(width, dimension);
-  b->dimension = dimension;
-  b->width = width;
-  b->data = malloc(0);
-  b->str = string_create();
-  b->str_updated = false;
-  
-  return b;
-}
-
-void board_destroy(struct board* b) {
-  string_destroy(b->str);
-  free(b->data);
-  free(b);
-}
-
 // board_coords_to_index(b, coords) converts coords into the corresponding index in board's data
 // requires: dimension of board is same as that of coords
 //           0 <= any component of coords < width of the board
@@ -129,15 +107,13 @@ void board_overwrite(struct board *b, char c) {
 }
 
 // board_print_sqr_shift(*b, *v) modifies a vector to represent the square that would be printed next. 
-//   loops around to beginning if v is the very last square printed. returns the number of the component of
-//   "greatest order" changed - order is even to odd; 0, 2, 4, ... 1, 3, 5...
+//   loops around to beginning if v is the very last square printed.
 //     ex. if the square at vector (0 2 0) is the first square to print after (3 1 3), for 
-//         v = (3, 1, 3), board_print_sqr_shift(b, v) modifies v to be (0 2 0) and returns 1 
-//         (second component was "greatest order" to change)
+//         v = (3, 1, 3), board_print_sqr_shift(b, v) modifies v to be (0 2 0)
 // requires: v and b have same dimension
 // effects: modifies v
 // time: O(n) where n is the dimension of b and v
-static int board_print_sqr_shift(const struct board *b, struct vector *v) {
+static void board_print_sqr_shift(const struct board *b, struct vector *v) {
   /* 
   example board:
     A|B  |  C
@@ -165,7 +141,6 @@ static int board_print_sqr_shift(const struct board *b, struct vector *v) {
   assert(dim == vector_dimension(v));
 
   const int h_dim = (dim + 1) / 2;
-  const int v_dim = dim / 2;
   
   vector_add_component(v, 0, 1);
   
@@ -175,11 +150,10 @@ static int board_print_sqr_shift(const struct board *b, struct vector *v) {
   for (int i = 0; i < dim; ++i) {
     
     comp = next_comp;
-
     // goes 0, 2, 4, ... 1, 3, 5 ... 0, 2, 4, ...
-    if (((i + 1) % dim) <= h_dim) {
+    if (((i + 1) % dim) < h_dim) {
       next_comp = 2 * ((i + 1) % dim);
-    } else if (((i + 1) % dim) > h_dim) {
+    } else {
       next_comp = 2 * (((i + 1) % dim) - h_dim) + 1;
     }
     
@@ -192,9 +166,6 @@ static int board_print_sqr_shift(const struct board *b, struct vector *v) {
       }
     }
   }
-
-  return next_comp % dim;
-  
 }
 
 // highest_div_exp(base, n) returns the exponent of the highest power of base that divides n
@@ -235,9 +206,11 @@ static void board_update_string(struct board *b) {
   // case that b's width is 1 or 0; special cases
   switch (width) {
     case 0:
+      string_append_char(b->str, '\n');
       return;
     case 1:
       string_append_char(b->str, b->data[0]);
+      string_append_char(b->str, '\n');
       return;
   }
 
@@ -268,33 +241,37 @@ static void board_update_string(struct board *b) {
   // form a horizontal deliminator (just a horizontal line of characters to separate vertical dimensions)
   struct string *h_delim = string_create();
 
-  for (int seg = 0; seg < h_segments; ++seg) {
+  for (int seg = 0; seg < h_segments;) {
     // add a segment
     for (int col = 0; col < width; ++col) {
       string_append_char(h_delim, HORIZ_SEPARATOR);
     }
 
-    // at the intersection of vertical and horizontal deliminators, there are intersection characters
-    // add these to the deliminator
-    int seg_sep_len = highest_div_exp(width, seg + 1);
+    ++seg;
 
-    for (int sep = 0; sep < seg_sep_len; ++sep) {
-      string_append_char(h_delim, INTER_SEPARATOR);
+    if (seg < h_segments) {
+      // at the intersection of vertical and horizontal deliminators, there are intersection characters
+      // add these to the deliminator
+      int seg_sep_len = highest_div_exp(width, seg) + 1;
+
+      for (int sep = 0; sep < seg_sep_len; ++sep) {
+        string_append_char(h_delim, INTER_SEPARATOR);
+      }
     }
   }
-
+  
   string_append_char(h_delim, '\n');
-
+  
   // form the board
   struct vector *square = vector_create(dim);
 
   // vertical segment by vertical segment
-  for (int v_seg = 0; v_seg < v_segments; ++v_seg) {
+  for (int v_seg = 0; v_seg < v_segments;) {
     // make vertical segment
     for (int row = 0; row < width; ++row) {
       
       // horizontal segment by horizontal segment
-      for (int h_seg = 0; h_seg < h_segments; ++h_seg) {
+      for (int h_seg = 0; h_seg < h_segments;) {
         // make one line; similar to horiz. delim code
         // make horizontal segment
         for (int col = 0; col < width; ++col) {
@@ -302,20 +279,28 @@ static void board_update_string(struct board *b) {
           board_print_sqr_shift(b, square);
         }
 
-        // add vertical deliminators to line 
-        int v_seg_sep_len = highest_div_exp(width, h_seg + 1);
+        ++h_seg;
 
-        for (int sep = 0; sep < v_seg_sep_len; ++sep) {
-          string_append_char(b->str, VERT_SEPARATOR);
+        if (h_seg < h_segments) {
+          // add vertical deliminators to line 
+          int h_seg_sep_len = highest_div_exp(width, h_seg) + 1;
+
+          for (int sep = 0; sep < h_seg_sep_len; ++sep) {
+            string_append_char(b->str, VERT_SEPARATOR);
+          }
         }
       }
 
       string_append_char(b->str, '\n');
+    }
 
+    ++v_seg;
+
+    if (v_seg < v_segments) {
       // add vertical deliminators to line 
-      int h_seg_sep_len = highest_div_exp(width, v_seg + 1);
+      int v_seg_sep_len = highest_div_exp(width, v_seg) + 1;
 
-      for (int sep = 0; sep < h_seg_sep_len; ++sep) {
+      for (int sep = 0; sep < v_seg_sep_len; ++sep) {
         string_append_string(b->str, h_delim);
       }
     }
@@ -327,4 +312,29 @@ static void board_update_string(struct board *b) {
 void board_print(struct board *b) {
   board_update_string(b);
   string_print(b->str);
+}
+
+struct board *board_create(int width, int dimension) {
+  assert(width >= 0);
+  assert(dimension >= 0);
+
+  struct board *b = malloc(sizeof(struct board));
+  
+  b->len = int_pow(width, dimension);
+  b->dimension = dimension;
+  b->width = width;
+  b->data = malloc(b->len * sizeof(char));
+
+  board_overwrite(b, ' ');
+
+  b->str = string_create();
+  b->str_updated = false;
+  
+  return b;
+}
+
+void board_destroy(struct board* b) {
+  string_destroy(b->str);
+  free(b->data);
+  free(b);
 }

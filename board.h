@@ -13,6 +13,8 @@ struct board;
 
 // board_create(width, dimension) creates a board of width width and dimension dimension 
 //   and returns its address
+// requires: dimension > 0
+//           width >= 0
 // effects: allocates memory for a board and its data
 // time: O(1)
 struct board *board_create(int width, int dimension);
@@ -25,7 +27,7 @@ void board_destroy(struct board* b);
 
 // board_set_square(b, coords, c) changes the value at the coords to c
 // requires: dimension of board = dimension of coords
-//           all coords' values are between 0 and size - 1
+//           0 <= any component of coords < width of b
 // effects: changes board's data at the coords square to c
 // time: O(1)
 void board_set_square(struct board *b, const struct vector *coords, char c);
@@ -33,7 +35,7 @@ void board_set_square(struct board *b, const struct vector *coords, char c);
 // board_size_change(b, width, dimensions) resizes a board b to have sides of length width in dimension
 //   dimensions and overwrites board to be all spaces
 // requires: b is a pointer to heap
-//           dimension >= 0
+//           dimension > 0
 //           width >= 0
 // effects: reallocates memory to fit new board dimensions and size
 // time: O(m) where m = the count of squares in board

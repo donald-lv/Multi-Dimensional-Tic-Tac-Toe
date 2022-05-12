@@ -47,7 +47,7 @@ void vector_set_component(struct vector *v, int comp, int value) {
 void vector_zero(struct vector *v) {
   assert(v);
   for (int *i = v->data; i < v->data + v->dimension; ++i) {
-    i = 0;
+    *i = 0;
   }
 }
 

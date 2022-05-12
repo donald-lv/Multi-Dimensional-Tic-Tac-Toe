@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-// a vector with a given dimension and coordinates
+// a vector with a given dimension and integer values for each component
 struct vector;
 
 // vector_dimension(v) produces the dimension of vector v

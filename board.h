@@ -11,20 +11,6 @@
 
 struct board;
 
-// board_create(width, dimension) creates a board of width width and dimension dimension 
-//   and returns its address
-// requires: dimension > 0
-//           width >= 0
-// effects: allocates memory for a board and its data
-// time: O(1)
-struct board *board_create(int width, int dimension);
-
-// board_destroy(b) frees the memory for b and its data
-// requires: b is a valid pointer
-// effects: frees b and its data
-// time: O(1)
-void board_destroy(struct board* b);
-
 // board_set_square(b, coords, c) changes the value at the coords to c
 // requires: dimension of board = dimension of coords
 //           0 <= any component of coords < width of b
@@ -38,7 +24,7 @@ void board_set_square(struct board *b, const struct vector *coords, char c);
 //           dimension > 0
 //           width >= 0
 // effects: reallocates memory to fit new board dimensions and size
-// time: O(m) where m = the count of squares in board
+// time: O(n) where n = the count of squares in board
 void board_size_change(struct board *b, int width, int dimension);
 
 // board_overwrite(b, c) writes over board to contain only the character c
@@ -50,5 +36,27 @@ void board_overwrite(struct board *b, char c);
 // board_print(b) prints b as a board
 // effects: updates b and prints it
 //          produces output
-// time: O(mn) where n is the total count of squares, m is the dimension of b
+// time: i dont know
 void board_print(struct board *b);
+
+// board_dimension(const struct board *b) returns the dimension of board b
+// time: O(1)
+int board_dimension(const struct board *b);
+
+// board_width(const struct board *b) returns the width of board b
+// time: O(1)
+int board_width(const struct board *b);
+
+// board_create(width, dimension) creates a board of width width and dimension dimension 
+//   and returns its address
+// requires: dimension > 0
+//           width >= 0
+// effects: allocates memory for a board and its data
+// time: O(1)
+struct board *board_create(int width, int dimension);
+
+// board_destroy(b) frees the memory for b and its data
+// requires: b is a valid pointer
+// effects: frees b and its data
+// time: O(1)
+void board_destroy(struct board* b);

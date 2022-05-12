@@ -53,7 +53,7 @@ static int board_coords_to_index(const struct board *b, const struct vector *coo
 
   for (int i = 0; i < b->dimension; i++) {
     int coord_comp = vector_component(coords, i);
-
+    
     assert(0 <= coord_comp);
     assert(coord_comp < b->width);
     
@@ -187,7 +187,7 @@ static int highest_div_exp(int base, int n) {
 
 // board_update_string(b) updates b's string to reflect its data
 // effects: updates b's string
-// time: O(mn) where n is the total count of squares, m is the dimension of b
+// time: i dont know
 static void board_update_string(struct board *b) {
   assert(b);
 
@@ -264,6 +264,7 @@ static void board_update_string(struct board *b) {
   
   // form the board
   struct vector *square = vector_create(dim);
+  vector_zero(square);
 
   // vertical segment by vertical segment
   for (int v_seg = 0; v_seg < v_segments;) {
@@ -312,6 +313,14 @@ static void board_update_string(struct board *b) {
 void board_print(struct board *b) {
   board_update_string(b);
   string_print(b->str);
+}
+
+int board_dimension(const struct board *b) {
+  return b->dimension;
+}
+
+int board_width(const struct board *b) {
+  return b->width;
 }
 
 struct board *board_create(int width, int dimension) {

@@ -5,6 +5,9 @@
 #include "vector.h"
 #include "board.h"
 
+const int DEFAULT_WIDTH = 4;
+const int DEFAULT_DIM = 3;
+
 // tutorial prints instructions on how to play the game
 // effects: outputs instructions
 void tutorial() {
@@ -15,10 +18,10 @@ void tutorial() {
   printf("ex.\n");
   
   // fill the board properly, print it
-  struct board *tut_board = board_create();
+  struct board *tut_board = board_create(4, 3);
   
 
   printf("\n");
-  printf("coordinates start at 0 and end at size - 1\n");
-  printf("coordinates \n");
+  printf("coordinates start at 0 and end at width - 1\n");
+  printf("For example: \n");
 }

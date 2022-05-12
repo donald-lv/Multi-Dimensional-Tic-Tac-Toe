@@ -23,7 +23,7 @@ int vector_dimension(const struct vector *v) {
 int vector_component(const struct vector *v, int comp) {
   assert(v);
   assert(0 <= comp);
-  assert(comp <= vector_dimension(v));
+  assert(comp <= v->dimension);
 
   return (v->data)[comp];
 }
@@ -31,7 +31,7 @@ int vector_component(const struct vector *v, int comp) {
 void vector_add_component(struct vector *v, int comp, int value) {
   assert(v);
   assert(0 <= comp);
-  assert(comp <= vector_dimension(v));
+  assert(comp <= v->dimension);
 
   v->data[comp] += value;
 }
@@ -39,9 +39,21 @@ void vector_add_component(struct vector *v, int comp, int value) {
 void vector_set_component(struct vector *v, int comp, int value) {
   assert(v);
   assert(0 <= comp);
-  assert(comp <= vector_dimension(v));
+  assert(comp <= v->dimension);
 
   v->data[comp] = value;
+}
+
+void vector_set(struct vector *v, const int *values, int len) {
+  assert(v);
+  assert(values);
+
+  int dimension = v->dimension;  
+  assert(len >= v->dimension);
+
+  for (int i = 0; i < dimension; ++i) {
+    v->data[i] = values[i];
+  }
 }
 
 void vector_zero(struct vector *v) {

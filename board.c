@@ -1,4 +1,5 @@
 // The implementation for the board module
+// See interface for documentation
 
 #include "board.h"
 #include "vector.h"
@@ -37,6 +38,24 @@ static int int_pow(int base, int exp) {
     prod *= base;
   } 
   return prod;
+}
+
+void board_wrap_vector_add(const struct board *b, struct vector *square, const struct vector *direction) {
+  assert(b);
+  assert(square);
+  assert(direction);
+  
+  int dimension = b->dimension;
+  assert(dimension == vector_dimension(square));
+  assert(board_dimension(square) == vector_dimension(direction));
+
+  int width = b->width;
+
+  vector_add(check_sqr, direction);
+
+  for (int i = 0; i < dimension; ++i) {
+    vector_component_set(square, i, (vector_component(square, i) + width) % width);
+  }
 }
 
 // board_coords_to_index(b, coords) converts coords into the corresponding index in board's data
@@ -306,6 +325,9 @@ static void board_update_string(struct board *b) {
       }
     }
   }
+
+  string_destroy(h_delim);
+  vector_destroy(square);
 
   b->str_updated = true;
 }

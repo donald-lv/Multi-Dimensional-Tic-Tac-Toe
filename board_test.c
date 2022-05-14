@@ -15,13 +15,13 @@ static void board_squares_test_recurse(struct board *b, struct vector *v, int co
   
   int width = board_width(b);
   
-  if (comp >= dim) {
+  if (comp < 0) {
     board_set_square(b, v, *c);
     *c = ((*c - 'a' + 1) % ('z' - 'a' + 1)) + 'a';
   } else {
     for (int i = 0; i < width; ++i) {
       vector_set_component(v, comp, i);
-      board_squares_test_recurse(b, v, comp + 1, c);
+      board_squares_test_recurse(b, v, comp - 1, c);
     }
   }
 }
@@ -31,7 +31,7 @@ static void board_squares_test(struct board *b) {
   vector_zero(v);
   char c = 'a';
 
-  board_squares_test_recurse(b, v, 0, &c);
+  board_squares_test_recurse(b, v, board_dimension(b) - 1, &c);
   vector_destroy(v);
 
   board_print(b);
@@ -52,8 +52,9 @@ int main(int argc, char *argv[]) {
   struct board *b = board_create(width, dimension);
   board_print(b);
 
-  board_squares_test(b);
+  printf("\n");
 
+  board_squares_test(b);
   board_destroy(b);
 
   return 0;

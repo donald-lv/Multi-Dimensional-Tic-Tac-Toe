@@ -11,6 +11,12 @@
 
 struct board;
 
+// board_wrap_vector_add(b, square, delta) adds delta to square. addition's components wrap around to remain in board
+// requires: dimension of b, square, delta are same
+// effects: modifies square
+// time: O(n) where n is the dimension
+void board_wrap_vector_add(const struct board *b, struct vector *square, const struct vector *delta);
+
 // board_set_square(b, coords, c) changes the value at the coords to c
 // requires: dimension of board = dimension of coords
 //           0 <= any component of coords < width of b

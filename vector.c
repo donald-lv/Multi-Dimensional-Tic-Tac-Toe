@@ -113,6 +113,8 @@ int vector_read(struct vector *v) {
       return result;
     }
   }
+
+  return result;
 }
 
 void vector_copy(struct vector *copy, const struct vector *original) {

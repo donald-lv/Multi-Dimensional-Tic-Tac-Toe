@@ -9,7 +9,7 @@ const int DEFAULT_WIDTH = 4;
 const int DEFAULT_DIM = 3;
 const char PLAYER_TOKENS[] = {'X', 'O', 'H', '8'};
 
-// tutorial prints instructions on how to play the game
+// tutorial() prints instructions on how to play the game
 // effects: outputs instructions
 // time: O(1)
 static void tutorial();
@@ -103,4 +103,24 @@ static void tutorial() {
   printf("A diagonal across 3 dimensions \n\n");
 
   printf("Have Fun!");
+}
+
+// run_turn(b, player_token) runs a player's turn given their char, returns the status of the turn
+// 0 if the player did not win on this turn
+// 1 if the player won
+// -1 if the player entered invalid input
+static bool run_turn(struct board *b, char player_token) {
+  const int dimension = board_dimension(b);
+  struct vector *v = vector_create(b);
+  int scan_result = vector_read(v);
+
+  if (scan_result == 1) {
+    board_set_square(b, v, player_token);
+  } else {
+    return -1;
+  }
+
+  if () {
+
+  }
 }

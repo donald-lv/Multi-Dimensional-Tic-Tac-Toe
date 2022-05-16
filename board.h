@@ -9,6 +9,7 @@
 #include "vector.h"
 #include <stdbool.h>
 
+extern const char EMPTY_SQUARE;
 struct board;
 
 // board_wrap_vector_add(b, square, delta) adds delta to square. addition's components wrap around to remain in board
@@ -44,6 +45,10 @@ void board_size_change(struct board *b, int width, int dimension);
 // effects: mutates b to only contain c
 // time: O(n) where n is the total number of squares of the board
 void board_overwrite(struct board *b, char c);
+
+// board_square_count(b) gives the number of squares in b
+// time: O(1)
+bool board_square_count(const struct board *b);
 
 // board_print(b) prints b as a board. includes a trailing newline
 // effects: updates b and prints it

@@ -10,9 +10,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-const char VERT_SEPARATOR = '|';
-const char HORIZ_SEPARATOR = '-';
-const char INTER_SEPARATOR = '+';
+static const char VERT_SEPARATOR = '|';
+static const char HORIZ_SEPARATOR = '-';
+static const char INTER_SEPARATOR = '+';
+const char EMPTY_SQUARE = ' ';
 
 // requires: data is a valid pointer
 //           len >= 0
@@ -25,6 +26,7 @@ struct board {
   int len;
   int dimension;
   int width;
+  char empty_square;
 };
 
 // int_pow(base, exp) raises base to the expth exponent for nonnegative base. 
@@ -119,6 +121,11 @@ void board_overwrite(struct board *b, char c) {
   }
 
   b->str_updated = false;
+}
+
+bool board_square_count(const struct board *b) {
+  assert(b);
+  return b->len;
 }
 
 // board_print_sqr_shift(*b, *v) modifies a vector to represent the square that would be printed next. 

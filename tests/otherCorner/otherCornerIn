@@ -1,0 +1,17 @@
+3 4
+enter 2 0 0 0
+result 2 0 0 0
+enter 2 1 0 0
+result 2 1 0 0
+enter 2 2 0 0
+result 2 2 0 0
+
+enter 1 1 0 1
+result 1 1 0 1
+enter 0 2 0 2
+result 0 2 0 2
+
+enter 1 0 1 0
+result 1 0 1 0
+enter 0 0 2 0
+result 0 0 2 0

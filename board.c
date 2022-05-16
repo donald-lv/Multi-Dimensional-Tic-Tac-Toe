@@ -47,14 +47,14 @@ void board_wrap_vector_add(const struct board *b, struct vector *square, const s
   
   int dimension = b->dimension;
   assert(dimension == vector_dimension(square));
-  assert(board_dimension(square) == vector_dimension(direction));
+  assert(dimension == vector_dimension(direction));
 
   int width = b->width;
 
-  vector_add(check_sqr, direction);
+  vector_add(square, direction);
 
   for (int i = 0; i < dimension; ++i) {
-    vector_component_set(square, i, (vector_component(square, i) + width) % width);
+    vector_set_component(square, i, (vector_component(square, i) + width) % width);
   }
 }
 
@@ -83,11 +83,7 @@ static int board_coords_to_index(const struct board *b, const struct vector *coo
   return index;
 }
 
-// board_at_coord(b, coords) gives the value at the coords in the board
-// requires: dimension of board is same as that of coords
-//           0 <= any component of coords < width of board
-// time: O(n) where n is the dimension of b and coords
-static char board_at_coord(const struct board *b, const struct vector *coords) {
+char board_at_coord(const struct board *b, const struct vector *coords) {
   assert(b);
   assert(coords);
   assert(b->dimension == vector_dimension(coords));
@@ -355,9 +351,6 @@ struct board *board_create(int width, int dimension) {
   b->dimension = dimension;
   b->width = width;
   b->data = malloc(b->len * sizeof(char));
-
-  board_overwrite(b, ' ');
-
   b->str = string_create();
   b->str_updated = false;
   

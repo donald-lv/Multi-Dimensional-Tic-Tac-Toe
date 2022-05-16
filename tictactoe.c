@@ -1,5 +1,9 @@
 // The implementation for the tictactoe module
 
+#include "board.h"
+#include "vector.h"
+
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -20,24 +24,23 @@ terminology: a direction is a vector whose components are each one of 1, 0 or 1
              a diagonal is a series of squares in a direction d that pass through any such s for d
 */
 
-// check diag(b, square, direction) determines if all squares along the direction involving square are the same
-//   characters
-static bool check_diag(const struct board *b, const struct vector *square, const struct vector *direction) {
+bool board_check_line(const struct board *b, const struct vector *square, const struct vector *direction) {
   assert(b);
   assert(square);
   assert(direction);
-  assert(board_dimension(b) == vector_dimension(square));
-  assert(board_dimension(square) == vector_dimension(direction));
+  int dimension = board_dimension(b);
+  assert(dimension == vector_dimension(square));
+  assert(dimension == vector_dimension(direction));
   
   int width = board_width(b);
   char c = board_at_coord(b, square);
 
-  struct vector *check_sqr = vector_create(0);
+  struct vector *check_sqr = vector_create(dimension);
   vector_copy(check_sqr, square);
   board_wrap_vector_add(b, check_sqr, direction);
 
   for (int i = 1; i < width; ++i) {
-    if (board_at_coord(check_sqr) != c) {
+    if (board_at_coord(b, check_sqr) != c) {
       vector_destroy(check_sqr);
       return false;
     }
@@ -48,13 +51,13 @@ static bool check_diag(const struct board *b, const struct vector *square, const
   return true;
 }
 
-// points_diagonal(b, square, direction) verifys that a direction points on a diagonal 
+// board_points_diagonal(b, square, direction) verifys that a direction points on a diagonal 
 //   that the square lies on.
 // ex. for vector (0, 2, 1) in a 3x3x3 board, components 0 and 1 are 1 unit away from the edge.
 //       if direction is either (1, -1, 0) or (1, 0, 0) they are valid
 // requires: the dimension of b, square and direction are same
 // time: O(n) where n is the dimension
-static bool points_diagonal(const struct board *b, const struct vector *square, const struct vector *direction) {
+static bool board_points_diagonal(const struct board *b, const struct vector *square, const struct vector *direction) {
   assert(b);
   assert(square);
   assert(direction);
@@ -65,7 +68,7 @@ static bool points_diagonal(const struct board *b, const struct vector *square, 
 
   int width = board_width(b);
   int edge_distance = -1;
-  
+
   for (int i = 0; i < dimension; ++i) {
     int direction_comp = vector_component(direction, i);
     int square_comp = vector_component(square, i);
@@ -74,8 +77,9 @@ static bool points_diagonal(const struct board *b, const struct vector *square, 
       // set current_edge_distance
       int current_edge_distance = 0;
 
+      // if direction_comp negative, pick distance from width, else pick distance to 0
       if (direction_comp < 0) {
-        current_edge_distance = width + 1 - square_comp;
+        current_edge_distance = width - 1 - square_comp;
       } else {
         current_edge_distance = square_comp;
       }
@@ -97,16 +101,16 @@ static bool points_diagonal(const struct board *b, const struct vector *square, 
   return true;
 }
 
-// check_square_dir_perms(b, square, direction, comp) checks if a square has won tictactoe - if it is part of a
+// board_check_square_dir_perms(b, square, direction, comp) checks if a square has won tictactoe - if it is part of a
 //   unbroken diagonal of same characters. checks the permutations of directions involving 1 or 0 unit steps in either direction.
-//   checks these permutations involving components past the compth component
+//   checks these permutations involving components preceding comp
 // ex. for 2d, the dir permutations are:
 //   (1 1)  (1 0)  (1 -1)
 //   (0 1)  (0 0)  (1 -1)
 //   (-1 1) (-1 0) (-1 -1)
 // effects: modifies direction
 // time: unknown
-static bool check_square_dir_perms(const struct board *b, const struct vector *square, struct vector *direction, int comp) {
+static bool board_check_square_dir_perms(const struct board *b, const struct vector *square, struct vector *direction, int comp) {
   assert(b);
   assert(square);
   assert(direction);
@@ -118,16 +122,17 @@ static bool check_square_dir_perms(const struct board *b, const struct vector *s
   int width = board_width(b);
 
   if (comp < 0) {
-    if (!points_diagonal(b, square, direction)) {
+    if (!board_points_diagonal(b, square, direction)) {
       return false;
     }
 
     // when direction is valid, check the diagonal it points in
-    return check_diag(b, square, direction);
+    return board_check_line(b, square, direction);
   } else {
     // for all permutations of a component being -1, 0 or 1
     for (int c = -1; c < 2; ++c) {
-      if (check_square_dir_perms(b, square, direction, comp - 1)) {
+      vector_set_component(direction, comp, c);
+      if (board_check_square_dir_perms(b, square, direction, comp - 1)) {
         return true;
       }
     }
@@ -136,10 +141,19 @@ static bool check_square_dir_perms(const struct board *b, const struct vector *s
   }
 }
 
-char check_square(const struct board *b, const struct vector *square) {
+char board_check_square(const struct board *b, const struct vector *square) {
+  assert(b);
+  assert(square);
+  int dimension = board_dimension(b);
+  assert(dimension == vector_dimension(square));
+
   char c = board_at_coord(b, square);
-  bool result = check_square_dir_perms(b, square, );
+
+  struct vector *direction = vector_create(dimension);
+  bool result = board_check_square_dir_perms(b, square, direction, board_dimension(b) - 1);
   
+  vector_destroy(direction);
+
   if (!result) {
     return '\0';
   }

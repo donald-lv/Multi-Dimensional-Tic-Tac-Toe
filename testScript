@@ -1,0 +1,18 @@
+#!/bin/bash
+for in in tests/*/*In; do
+  out=${in%In}Out
+  
+  dos2unix ${in} > /dev/null 2> /dev/null
+  dos2unix ${out} > /dev/null 2> /dev/null
+
+  output="$(./test.out < ${in})"
+  if [ "${output}" == "$(cat ${out})" ]; then
+    echo ${in%In.txt} succeeded
+  else
+    echo ${in%In} failed
+    echo expected:
+    echo "$(cat ${out})"
+    echo received:
+    echo "${output}"
+  fi
+done

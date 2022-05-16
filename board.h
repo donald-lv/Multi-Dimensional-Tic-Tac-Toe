@@ -17,6 +17,12 @@ struct board;
 // time: O(n) where n is the dimension
 void board_wrap_vector_add(const struct board *b, struct vector *square, const struct vector *delta);
 
+// board_at_coord(b, coords) gives the value at the coords in the board
+// requires: dimension of board is same as that of coords
+//           0 <= any component of coords < width of board
+// time: O(n) where n is the dimension of b and coords
+char board_at_coord(const struct board *b, const struct vector *coords);
+
 // board_set_square(b, coords, c) changes the value at the coords to c
 // requires: dimension of board = dimension of coords
 //           0 <= any component of coords < width of b
@@ -39,10 +45,10 @@ void board_size_change(struct board *b, int width, int dimension);
 // time: O(n) where n is the total number of squares of the board
 void board_overwrite(struct board *b, char c);
 
-// board_print(b) prints b as a board
+// board_print(b) prints b as a board. includes a trailing newline
 // effects: updates b and prints it
 //          produces output
-// time: i dont know
+// time: unknown
 void board_print(struct board *b);
 
 // board_dimension(const struct board *b) returns the dimension of board b

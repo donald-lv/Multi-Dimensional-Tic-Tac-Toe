@@ -55,12 +55,11 @@ void vector_set_component(struct vector *v, int comp, int value) {
   v->data[comp] = value;
 }
 
-void vector_set(struct vector *v, const int *values, int len) {
+void vector_set(struct vector *v, const int *values) {
   assert(v);
   assert(values);
 
-  int dimension = v->dimension;  
-  assert(len >= v->dimension);
+  int dimension = v->dimension;
 
   for (int i = 0; i < dimension; ++i) {
     v->data[i] = values[i];
@@ -105,8 +104,8 @@ int vector_read(struct vector *v) {
   assert(v);
 
   int result = 1;
-  for (int *i = v->data; result == 1 && i < v->data + v->dimension; ++v) {
-    int result = scanf("%d", i);
+  for (int *i = v->data; result == 1 && i < v->data + v->dimension; ++i) {
+    int result = scanf(" %d", i);
     
     // scan result: 1 for nothing scanned, 2 for 
     if (result != 1) {
@@ -120,12 +119,10 @@ int vector_read(struct vector *v) {
 void vector_copy(struct vector *copy, const struct vector *original) {
   assert(copy);
   assert(original);
-  
-  vector_destroy(copy);
+  int dimension = copy->dimension;
+  assert(dimension == original->dimension);
 
-  copy = vector_create(original->dimension);
-
-  for (int i = 0; i < copy->dimension; ++i) {
+  for (int i = 0; i < dimension; ++i) {
     copy->data[i] = original->data[i];
   }
 }

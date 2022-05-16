@@ -33,6 +33,12 @@ void vector_add_component(struct vector *v, int comp, int value);
 // time: O(1)
 void vector_set_component(struct vector *v, int comp, int value);
 
+// vector_set(v, values) sets v's coords to the values in values
+// requires: there are more values in values than dimension of v
+// effects: modifies v
+// time: O(n) where n is dimension of v
+void vector_set(struct vector *v, const int *values);
+
 // vector_zero(v) zeroes v
 // effects: zeroes v
 // time: O(n) where n is the dimension of v
@@ -44,8 +50,13 @@ bool vector_is_zero(const struct vector *v);
 
 // vector_print(v) prints a vector. no newline at end
 // effects: produces output
-// time: O(1)
+// time: O(n) where n is the dimension of v
 void vector_print(const struct vector *v);
+
+// vector_read(v) reads a vector to v
+// effects: takes input
+// time: O(n) where n is the dimension of v
+int vector_read(struct vector *v);
 
 // vector_copy(copy, original) copies original onto copy
 // effects: destroy's copy's value
@@ -55,7 +66,7 @@ void vector_copy(struct vector *copy, const struct vector *original);
 
 // vector_equal(v1, v2) determines if two vectors have the same components and dimensions
 // time: O(n) where n is the larger of the dimensions of v1, v2
-bool vector_equal(v1, v2);
+bool vector_equal(const struct vector *v1, const struct vector *v2);
 
 // vector_create(n) creates a vector with n components and returns its address
 // requires: n >= 0

@@ -3,27 +3,18 @@
 
 #include "board.h"
 #include "vector.h"
+#include "text-commands.h"
 #include "tictactoe.h"
 
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 
-// str_int_val(str) gives a unique number for string str
-// time: O(n) where n is length of str
-int str_int_val(const char *str) {
-  int sum = 0;
-  for (const char *c = str; *c != '\0'; ++c) {
-    sum += *c;
-  }
-  return sum;
-}
-
 // board_squares_test_recurse(b, v, comp, c) sets the square in b at all permutations of components of place greater 
 //   than comp to cycling characters
 static void board_squares_test_recurse(struct board *b, struct vector *v, int comp, char *c) {
-  int dim = board_dimension(b);
-  assert(dim == vector_dimension(v));
+  const int dimension = board_dimension(b);
+  assert(dimension == vector_dimension(v));
   
   int width = board_width(b);
   
@@ -53,11 +44,11 @@ static void board_squares_test(struct board *b) {
 }
 
 int main(void) {
-  const int enter = str_int_val("enter");
-  const int result = str_int_val("result");
-  const int test = str_int_val("test");
-  const int line = str_int_val("line");
-  const int print = str_int_val("print");
+  const long enter = command_to_long("enter");
+  const long result = command_to_long("result");
+  const long test = command_to_long("test");
+  const long line = command_to_long("line");
+  const long print = command_to_long("print");
   
   int width = 0;
   int dimension = 0;
@@ -65,39 +56,29 @@ int main(void) {
   scanf("%d", &width);
   scanf("%d", &dimension);
 
-  char command_buffer[1000] = {'\0'};
-
   struct board *b = board_create(width, dimension);
   board_overwrite(b, ' ');
 
   struct vector *v = vector_create(dimension);
   struct vector *dir = vector_create(dimension);
 
-  int scan_result = 0;
+  int scan_result = 1;
   char c = '\0';
-  bool cont = true;
+  long command = 0;
 
-  while (cont) {
-    // vector_print(dir);
+  while (true) {
+    command = command_read();
 
-    int command = 0;
-    scan_result = scanf("%s", command_buffer);
-    
-    if (scan_result == 1) {
-      command = str_int_val(command_buffer);
-    } else {
-      command = -1;
-      cont = false;
+    if (command == QUIT_SYMBOL) {
+      break;
     }
 
-    if (command == -1) {
-      cont = false;
-    } else if (command == enter) {
+    if (command == enter) {
       scan_result = vector_read(v);
       if (scan_result == 1) {
         board_set_square(b, v, 'X');
       } else {
-        cont = false;
+        break;
       }
 
     } else if (command == result) {
@@ -110,7 +91,7 @@ int main(void) {
           printf("no win\n");
         }
       } else {
-        cont = false;
+        break;
       }
 
     } else if (command == test) {
@@ -135,16 +116,12 @@ int main(void) {
       board_print(b);
       printf("\n");
 
-    } else {
-      cont = false;
     }
 
     if (scan_result != 1) {
-      cont = false;
+      break;
     }
   }
-
-
 
   vector_destroy(v);
   board_destroy(b);

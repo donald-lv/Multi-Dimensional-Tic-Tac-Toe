@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
 struct string {
   char *data;
@@ -33,7 +35,21 @@ int string_length(const struct string *str) {
   return str->len;
 }
 
-// -------- specific string functions --------
+char string_char_at(const struct string *str, int index) {
+  assert(str);
+  assert(0 <= index);
+  assert(index < str->len);
+
+  return str->data[index];
+}
+
+char *string_to_arr(const struct string *str) {
+  assert(str);
+
+  char *ret = malloc((str->len + 1) * sizeof(char));
+  strcpy(ret, str->data);
+  return ret;
+}
 
 void string_append_char(struct string *str, char c) {
   assert(str);
@@ -46,6 +62,8 @@ void string_append_char(struct string *str, char c) {
     str->maxlen *= 2;
     str->data = realloc(str->data, str->maxlen);
   }
+  
+  str->data[str->len] = '\0';
 }
 
 void string_append_char_arr(struct string *str, const char *arr, int arr_len) {
@@ -78,10 +96,52 @@ struct string *string_slice(const struct string *str, int start, int end) {
   return ret;
 }
 
+int string_read(struct string *str, bool ws) {
+  // read leading whitespace
+  char in = '\0';
+  bool loop = false;
+  int result = 0;
+
+  if (ws) {
+    do {
+      loop = false;
+      result = scanf("%c", &in);
+      
+      if (result == 1) {
+        if (in == ' ' || in == '\n') {
+          loop = true;
+        }
+      }
+    } while (loop);
+  } else {
+    result = scanf("%c", &in);
+  }
+
+  if (result != 1) {
+    return result;
+  }
+
+  string_destroy(str);
+  str = string_create();
+  
+  loop = true;
+
+  while (loop) {
+    string_append_char(str, in);
+
+    // check input
+    loop = false;
+    result = scanf("%c", &in);
+    if ((result == 1) && (in != ' ' && in != '\n')) {
+      loop = true;
+    }
+  }
+
+  return result;
+}
+
 void string_print(const struct string *str) {
   assert(str);
   assert(str->data);
-
-  str->data[str->len] = '\0';
   printf("%s", str->data);
 }

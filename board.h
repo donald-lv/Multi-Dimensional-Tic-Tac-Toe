@@ -9,7 +9,9 @@
 #include "vector.h"
 #include <stdbool.h>
 
-extern const char EMPTY_SQUARE;
+extern const int MIN_DIMENSION;
+extern const int MIN_WIDTH;
+
 struct board;
 
 // board_wrap_vector_add(b, square, delta) adds delta to square. addition's components wrap around to remain in board
@@ -31,14 +33,19 @@ char board_at_coord(const struct board *b, const struct vector *coords);
 // time: O(1)
 void board_set_square(struct board *b, const struct vector *coords, char c);
 
-// board_size_change(b, width, dimensions) resizes a board b to have sides of length width in dimension
+// vector_in_board(b, v) determines if vector v is within the bounds of the board.
+// requires: dimension of b and v are the same.
+// time: O(n) where n is the dimension of b and v
+bool vector_in_board(const struct board *b, const struct vector *v);
+
+// board_change(b, width, dimensions) resizes a board b to have sides of length width in dimension
 //   dimensions and overwrites board to be all spaces
 // requires: b is a pointer to heap
-//           dimension > 0
-//           width >= 0
+//           dimension >= MIN_DIMENSION
+//           width >= MIN_WIDTH
 // effects: reallocates memory to fit new board dimensions and size
 // time: O(n) where n = the count of squares in board
-void board_size_change(struct board *b, int width, int dimension);
+void board_change(struct board *b, int width, int dimension);
 
 // board_overwrite(b, c) writes over board to contain only the character c
 // requires: b is a valid pointer
@@ -46,9 +53,9 @@ void board_size_change(struct board *b, int width, int dimension);
 // time: O(n) where n is the total number of squares of the board
 void board_overwrite(struct board *b, char c);
 
-// board_square_count(b) gives the number of squares in b
+// board_length(b) gives the number of squares in b
 // time: O(1)
-bool board_square_count(const struct board *b);
+int board_length(const struct board *b);
 
 // board_print(b) prints b as a board. includes a trailing newline
 // effects: updates b and prints it
@@ -56,7 +63,7 @@ bool board_square_count(const struct board *b);
 // time: unknown
 void board_print(struct board *b);
 
-// board_dimension(const struct board *b) returns the dimension of board b
+// board_dimension(b) returns the dimension of board b
 // time: O(1)
 int board_dimension(const struct board *b);
 
@@ -66,8 +73,8 @@ int board_width(const struct board *b);
 
 // board_create(width, dimension) creates a board of width width and dimension dimension 
 //   and returns its address
-// requires: dimension > 0
-//           width >= 0
+// requires: dimension >= MIN_DIMENSION
+//           width >= MIN_WIDTH
 // effects: allocates memory for a board and its data
 // time: O(1)
 struct board *board_create(int width, int dimension);

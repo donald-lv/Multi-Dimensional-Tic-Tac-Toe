@@ -5,7 +5,9 @@
     "memory": "c",
     "xutility": "c",
     "stdbool.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "resize-string.h": "c",
+    "vector.h": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled"
 }

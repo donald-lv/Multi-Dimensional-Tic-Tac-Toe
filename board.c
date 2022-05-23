@@ -13,12 +13,14 @@
 static const char VERT_SEPARATOR = '|';
 static const char HORIZ_SEPARATOR = '-';
 static const char INTER_SEPARATOR = '+';
-const char EMPTY_SQUARE = ' ';
+
+const int MIN_DIMENSION = 2;
+const int MIN_WIDTH = 2;
 
 // requires: data is a valid pointer
 //           len >= 0
-//           dimension >= 0
-//           width >= 0
+//           dimension >= MIN_DIMENSION
+//           width >= MIN_WIDTH
 struct board {
   char *data;
   struct string *str;
@@ -26,7 +28,6 @@ struct board {
   int len;
   int dimension;
   int width;
-  char empty_square;
 };
 
 // int_pow(base, exp) raises base to the expth exponent for nonnegative base. 
@@ -35,6 +36,7 @@ struct board {
 // time: O(n) where n is exp
 static int int_pow(int base, int exp) {
   assert(base >= 0);
+
   int prod = 1;
   for (int i = 0; i < exp; ++i) {
     prod *= base;
@@ -101,10 +103,26 @@ void board_set_square(struct board *b, const struct vector *coords, char c) {
   b->str_updated = false;
 }
 
-void board_size_change(struct board *b, int width, int dimension) {
+bool vector_in_board(const struct board *b, const struct vector *v) {
+  const int dimension = b->dimension;
+  assert(dimension == vector_dimension(v));
+  const int width = b->width;
+
+  for (int i = 0; i < dimension; ++i) {
+    int comp = vector_component(v, i);
+
+    if (comp < 0 || comp >= width) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void board_change(struct board *b, int width, int dimension) {
   assert(b);
-  assert(width >= 0);
-  assert(dimension >= 0);
+  assert(width >= MIN_WIDTH);
+  assert(dimension >= MIN_DIMENSION);
 
   b->width = width;
   b->dimension = dimension;
@@ -123,7 +141,7 @@ void board_overwrite(struct board *b, char c) {
   b->str_updated = false;
 }
 
-bool board_square_count(const struct board *b) {
+int board_length(const struct board *b) {
   assert(b);
   return b->len;
 }
@@ -259,14 +277,19 @@ static void board_update_string(struct board *b) {
   const int v_dimensions = dim / 2;
   const int v_segments = int_pow(width, v_dimensions - 1);
 
-
   // form a horizontal deliminator (just a horizontal line of characters to separate vertical dimensions)
   struct string *h_delim = string_create();
+  struct string *h_cap = string_create();
+
+  string_append_char(h_delim, VERT_SEPARATOR);
+  string_append_char(h_cap, INTER_SEPARATOR);
 
   for (int seg = 0; seg < h_segments;) {
     // add a segment
     for (int col = 0; col < width; ++col) {
       string_append_char(h_delim, HORIZ_SEPARATOR);
+      string_append_char(h_cap, HORIZ_SEPARATOR);
+
     }
 
     ++seg;
@@ -278,21 +301,32 @@ static void board_update_string(struct board *b) {
 
       for (int sep = 0; sep < seg_sep_len; ++sep) {
         string_append_char(h_delim, INTER_SEPARATOR);
+        string_append_char(h_cap, HORIZ_SEPARATOR);
       }
     }
   }
   
+  string_append_char(h_delim, VERT_SEPARATOR);
   string_append_char(h_delim, '\n');
   
+  string_append_char(h_cap, INTER_SEPARATOR);
+  string_append_char(h_cap, '\n');
+
   // form the board
   struct vector *square = vector_create(dim);
   vector_zero(square);
 
+  // add top cap
+  string_append_string(b->str, h_cap);
+
   // vertical segment by vertical segment
   for (int v_seg = 0; v_seg < v_segments;) {
+
     // make vertical segment
     for (int row = 0; row < width; ++row) {
-      
+      // add left cap
+      string_append_char(b->str, VERT_SEPARATOR);
+
       // horizontal segment by horizontal segment
       for (int h_seg = 0; h_seg < h_segments;) {
         // make one line; similar to horiz. delim code
@@ -314,6 +348,8 @@ static void board_update_string(struct board *b) {
         }
       }
 
+      // add right cap
+      string_append_char(b->str, VERT_SEPARATOR);
       string_append_char(b->str, '\n');
     }
 
@@ -329,7 +365,11 @@ static void board_update_string(struct board *b) {
     }
   }
 
+  // add bottom cap
+  string_append_string(b->str, h_cap);
+
   string_destroy(h_delim);
+  string_destroy(h_cap);
   vector_destroy(square);
 
   b->str_updated = true;
@@ -349,8 +389,8 @@ int board_width(const struct board *b) {
 }
 
 struct board *board_create(int width, int dimension) {
-  assert(width >= 0);
-  assert(dimension >= 0);
+  assert(width >= MIN_WIDTH);
+  assert(dimension >= MIN_DIMENSION);
 
   struct board *b = malloc(sizeof(struct board));
   

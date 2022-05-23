@@ -28,7 +28,7 @@ bool board_check_line(const struct board *b, const struct vector *square, const 
   assert(b);
   assert(square);
   assert(direction);
-  int dimension = board_dimension(b);
+  const int dimension = board_dimension(b);
   assert(dimension == vector_dimension(square));
   assert(dimension == vector_dimension(direction));
   
@@ -62,7 +62,7 @@ static bool board_points_diagonal(const struct board *b, const struct vector *sq
   assert(square);
   assert(direction);
 
-  int dimension = board_dimension(b);
+  const int dimension = board_dimension(b);
   assert(dimension == vector_dimension(square));
   assert(dimension == vector_dimension(direction));
 
@@ -115,7 +115,7 @@ static bool board_check_square_dir_perms(const struct board *b, const struct vec
   assert(square);
   assert(direction);
 
-  int dimension = board_dimension(b);
+  const int dimension = board_dimension(b);
   assert(dimension == vector_dimension(square));
   assert(dimension == vector_dimension(direction));
 
@@ -144,7 +144,7 @@ static bool board_check_square_dir_perms(const struct board *b, const struct vec
 char board_check_square(const struct board *b, const struct vector *square) {
   assert(b);
   assert(square);
-  int dimension = board_dimension(b);
+  const int dimension = board_dimension(b);
   assert(dimension == vector_dimension(square));
 
   char c = board_at_coord(b, square);

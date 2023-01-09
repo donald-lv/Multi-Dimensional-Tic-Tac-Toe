@@ -1,2 +1,2 @@
 # Multi-Dimensional-Tic-Tac-Toe
-(Unfinished) Rewrite of ND-Tic-Tac-Toe in C for fun and becuase the old code was bad...
+(Unfinished) Rewrite of ND-Tic-Tac-Toe in C for fun

@@ -283,7 +283,7 @@ static void tutorial_cmd(void) {
 
   // coord tut
   printf("\n---------\n\n");
-  printf("Coordinates start at 0 and end at width - 1. \n");
+  printf("Coordinates start at 0 and end at (width - 1). \n");
   printf("For example, this X is the point with coordinates (1 2 0) for the same board: \n\n");
   
   vector_set(square, (int[3]){1, 2, 0});
@@ -299,7 +299,6 @@ static void tutorial_cmd(void) {
   // victory tut
   board_overwrite(tut_board, ' ');
   
-  printf("\n---------\n");
   printf("A player wins by filling a straight diagonal in any dimension. \n");
   printf("For example, here are some ways to win: \n\n");
   
@@ -337,7 +336,7 @@ static void tutorial_cmd(void) {
   vector_set(square, (int[3]){2, 2, 2});
   board_set_square(tut_board, square, 'X');
 
-  printf("A diagonal across 2 dimensions \n");
+  printf("Another diagonal across 2 dimensions \n");
   board_print(tut_board);
   printf("\n");
 
@@ -355,8 +354,12 @@ static void tutorial_cmd(void) {
   board_print(tut_board);
   printf("\n");
 
+  printf("Beware: diagonals can go through all N dimensions of the board. \n");
+  printf("Here, they can step through all 3 dimensions\n");
+  printf("In a 4d board, they can step through all 4.\n");
+  printf("\n");
+  
   printf("Have Fun!\n");
-
   printf("\n");
 }
 

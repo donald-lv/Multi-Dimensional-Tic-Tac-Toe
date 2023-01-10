@@ -1,11 +1,21 @@
 #!/bin/bash
+
+# this script takes a program and two filesnames for an input
+# and expected output file. it feeds the input file into the 
+# program and determines whether the two are the same
+#
+
 for in in tests/*/*In; do
   out=${in%In}Out
   
+  # dos2unix the files, throw out their normal and error output
   dos2unix ${in} > /dev/null 2> /dev/null
   dos2unix ${out} > /dev/null 2> /dev/null
 
+  # get the output from the program: 
   output="$(./test.out < ${in})"
+
+  # check if the actual output is the same as the expected
   if [ "${output}" == "$(cat ${out})" ]; then
     echo ${in%In.txt} succeeded
   else

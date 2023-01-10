@@ -10,3 +10,6 @@ ${EXEC}: ${OBJECTS}
 	${CXX} ${OBJECTS} -o ${EXEC}
 
 -include ${DEPENDS}
+
+clean:
+	rm *.o *.out
